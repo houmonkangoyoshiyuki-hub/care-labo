@@ -1338,37 +1338,46 @@ export default function App() {
   };
 
   return (
-    <div style={{ background:isDark?"#080810":"#F0EAF0", minHeight:"100vh",
-      fontFamily:"'Noto Sans JP',sans-serif", display:"flex",
-      flexDirection:"column", alignItems:"center", padding:"14px 12px 48px" }}>
+    <div style={{ background:p.bg, minHeight:"100vh",
+      fontFamily:"'Noto Sans JP',sans-serif",
+      display:"flex", flexDirection:"column", maxWidth:520, margin:"0 auto" }}>
       <style>{`
         @keyframes dl{0%,80%,100%{opacity:.25}40%{opacity:1}}
         *{box-sizing:border-box;}
+        body{margin:0;background:${p.bg};}
       `}</style>
 
-      {/* ヘッダー */}
-      <div style={{ width:"100%", maxWidth:380, marginBottom:10,
-        display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <div>
-          <div style={{ fontSize:9, letterSpacing:4,
-            color:isDark?"#5A5A70":"#C080B0", marginBottom:2 }}>CARE LABO</div>
-          <div style={{ fontSize:20, fontWeight:900,
-            color:isDark?"#fff":"#281828", letterSpacing:1 }}>ケアラボ</div>
+      {/* LINEスタイルヘッダー */}
+      <div style={{ background:`linear-gradient(155deg,${isDark?cur.g1D:cur.g1L},${isDark?cur.g2D:cur.g2L})`,
+        padding:"12px 16px", display:"flex", alignItems:"center", gap:10, flexShrink:0,
+        position:"sticky", top:0, zIndex:100 }}>
+        <div style={{ width:38,height:38,borderRadius:"50%",
+          background:"rgba(255,255,255,0.15)",border:"1.5px solid rgba(255,255,255,0.3)",
+          display:"flex",alignItems:"center",justifyContent:"center",
+          fontSize:cur.id==="skill"?13:20,fontWeight:cur.id==="skill"?900:400,flexShrink:0,
+          color:cur.id==="skill"?p.accent:"inherit" }}>
+          {cur.icon}
+        </div>
+        <div style={{ flex:1 }}>
+          <div style={{ color:"#fff",fontWeight:700,fontSize:15 }}>ケアラボ</div>
+          <div style={{ color:"rgba(255,255,255,0.65)",fontSize:11,marginTop:1 }}>{cur.label}</div>
         </div>
         <div style={{ display:"flex", gap:6, alignItems:"center" }}>
           <button onClick={()=>setShowKey(v=>!v)}
             style={{ fontSize:10, padding:"4px 10px", borderRadius:14,
-              border:`1px solid ${p.border}`, cursor:"pointer",
-              background:apiKey?p.accent:"none",
-              color:apiKey?p.accentFg:p.muted, fontWeight:apiKey?700:400 }}>
-            {apiKey?"✓ API設定済":"API設定"}
+              border:`1px solid rgba(255,255,255,0.3)`, cursor:"pointer",
+              background:apiKey?"rgba(255,255,255,0.25)":"rgba(255,255,255,0.1)",
+              color:"#fff", fontWeight:apiKey?700:400 }}>
+            {apiKey?"✓ API":"API設定"}
           </button>
           {["dark","light"].map(t=>(
             <button key={t} onClick={()=>setTheme(t)}
-              style={{ padding:"4px 10px", borderRadius:14, border:"none", cursor:"pointer",
+              style={{ padding:"4px 8px", borderRadius:12,
+                border:"1px solid rgba(255,255,255,0.2)", cursor:"pointer",
                 fontSize:10, fontWeight:theme===t?700:400,
-                background:theme===t?p.accent:p.card, color:theme===t?p.accentFg:p.muted }}>
-              {t==="dark"?"Dark":"Pop"}
+                background:theme===t?"rgba(255,255,255,0.25)":"rgba(255,255,255,0.05)",
+                color:"#fff" }}>
+              {t==="dark"?"🌙":"🌸"}
             </button>
           ))}
         </div>
@@ -1376,87 +1385,44 @@ export default function App() {
 
       {/* APIキー入力 */}
       {showKey && (
-        <div style={{ width:"100%", maxWidth:380, marginBottom:10,
-          background:p.card, borderRadius:14, padding:12, border:`1px solid ${p.border}` }}>
-          <div style={{ fontSize:11, color:p.muted, marginBottom:6 }}>
+        <div style={{ background:p.card, padding:14, borderBottom:`1px solid ${p.border}` }}>
+          <div style={{ fontSize:11, color:p.muted, marginBottom:8 }}>
             AnthropicのAPIキーを入力するとAIが動きます（sk-ant-…）
           </div>
           <div style={{ display:"flex", gap:8 }}>
             <input type="password" value={apiKey} onChange={e=>setApiKey(e.target.value)}
               placeholder="sk-ant-..."
               style={{ flex:1, background:p.card2, border:`1px solid ${p.border}`,
-                borderRadius:10, padding:"7px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+                borderRadius:10, padding:"8px 12px", fontSize:12, color:p.text, outline:"none" }}/>
             <button onClick={()=>setShowKey(false)}
               style={{ background:p.accent, color:p.accentFg, border:"none",
-                borderRadius:10, padding:"7px 14px", fontSize:12, fontWeight:700, cursor:"pointer" }}>
+                borderRadius:10, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer" }}>
               設定
             </button>
           </div>
         </div>
       )}
 
-      {/* iPhoneフレーム */}
-      <div style={{ background:"#111", borderRadius:44, padding:"12px 7px",
-        boxShadow:"0 30px 80px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.07)",
-        border:"2px solid #252525", width:"100%", maxWidth:330 }}>
-        <div style={{ display:"flex", justifyContent:"center", marginBottom:7 }}>
-          <div style={{ width:96, height:4, background:"#1C1C1C", borderRadius:2 }}/>
-        </div>
-        <div style={{ background:p.bg, borderRadius:28, overflow:"hidden",
-          height:560, display:"flex", flexDirection:"column" }}>
-          {/* LINEヘッダー */}
-          <div style={{ background:`linear-gradient(155deg,${isDark?cur.g1D:cur.g1L},${isDark?cur.g2D:cur.g2L})`,
-            padding:"10px 14px", display:"flex", alignItems:"center", gap:10, flexShrink:0 }}>
-            <div style={{ width:36,height:36,borderRadius:"50%",
-              background:"rgba(255,255,255,0.15)",border:"1.5px solid rgba(255,255,255,0.3)",
-              display:"flex",alignItems:"center",justifyContent:"center",
-              fontSize:cur.id==="skill"?13:19,fontWeight:cur.id==="skill"?900:400,flexShrink:0,
-              color:cur.id==="skill"?p.accent:"inherit" }}>
-              {cur.icon}
-            </div>
-            <div style={{ flex:1 }}>
-              <div style={{ color:"#fff",fontWeight:700,fontSize:13 }}>ケアラボ</div>
-              <div style={{ color:"rgba(255,255,255,0.65)",fontSize:10,marginTop:1 }}>{cur.label}</div>
-            </div>
-            {!apiKey && (
-              <div style={{ fontSize:9,color:"rgba(255,255,255,0.5)",
-                background:"rgba(255,255,255,0.1)",borderRadius:8,padding:"3px 7px" }}>
-                デモモード
-              </div>
-            )}
-          </div>
-
-          {/* コンテンツ */}
-          {renderScreen()}
-
-          {/* ホームへ戻るバー（ホーム以外の時だけ表示） */}
-          {tab !== "home" && (
-            <div style={{ background:p.card, borderTop:`1px solid ${p.border}`,
-              padding:"6px 14px", flexShrink:0, display:"flex", alignItems:"center",
-              justifyContent:"space-between" }}>
-              <button onClick={()=>setTab("home")}
-                style={{ display:"flex", alignItems:"center", gap:6,
-                  background:"none", border:"none", cursor:"pointer",
-                  color:p.muted, fontSize:11.5, fontWeight:600 }}>
-                ← ホームに戻る
-              </button>
-              <div style={{ fontSize:9, color:p.muted }}>{cur.label}</div>
-            </div>
-          )}
-        </div>
-        <div style={{ display:"flex", justifyContent:"center", marginTop:7 }}>
-          <div style={{ width:68, height:3, background:"#2A2A2A", borderRadius:2 }}/>
-        </div>
+      {/* コンテンツ（全画面） */}
+      <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+        {renderScreen()}
       </div>
 
-      {/* 使い方 */}
-      <div style={{ width:"100%", maxWidth:330, marginTop:10,
-        background:p.card, borderRadius:12, padding:"10px 12px", border:`1px solid ${p.border}` }}>
-        <div style={{ fontSize:10, fontWeight:700, color:p.accent, marginBottom:5 }}>使い方</div>
-        <div style={{ fontSize:11, color:p.muted, lineHeight:1.6 }}>
-          ホームのアイコンをタップして各機能に移動します。APIキーを設定するとAIが実際に返答します。
+      {/* ホームへ戻るバー */}
+      {tab !== "home" && (
+        <div style={{ background:p.card, borderTop:`1px solid ${p.border}`,
+          padding:"10px 16px", display:"flex", alignItems:"center",
+          justifyContent:"space-between", flexShrink:0,
+          position:"sticky", bottom:0, zIndex:100 }}>
+          <button onClick={()=>setTab("home")}
+            style={{ display:"flex", alignItems:"center", gap:6,
+              background:"none", border:"none", cursor:"pointer",
+              color:p.accent, fontSize:13, fontWeight:700 }}>
+            ← ホームに戻る
+          </button>
+          <div style={{ fontSize:10, color:p.muted }}>{cur.label}</div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
