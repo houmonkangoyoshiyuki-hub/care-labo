@@ -21,6 +21,24 @@ function generatePasscode() {
   return `NC-${randPart(4)}-${randPart(4)}`;
 }
 
+// このWebhook（このアプリ）が処理すべき決済かどうかを、実際に使われた価格IDで判定する。
+// 同じStripeアカウントを複数アプリで共有しているため、他アプリの決済で誤発火しないようにする。
+async function getLineItemPriceIds(stripe, event) {
+  const obj = event.data.object;
+  try {
+    if (event.type === 'checkout.session.completed') {
+      const items = await stripe.checkout.sessions.listLineItems(obj.id, { limit: 10 });
+      return items.data.map((it) => it.price?.id).filter(Boolean);
+    }
+    if (event.type === 'invoice.payment_succeeded') {
+      return (obj.lines?.data || []).map((line) => line.price?.id).filter(Boolean);
+    }
+  } catch (err) {
+    console.error('Failed to fetch line items:', err.message);
+  }
+  return [];
+}
+
 async function kvCommand(commandArray) {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
@@ -99,6 +117,18 @@ export default async function handler(req, res) {
   if (shouldProcess) {
     try {
       const obj = event.data.object;
+
+      // このアプリの商品の決済かどうかを確認（STRIPE_PRICE_IDS 環境変数にカンマ区切りで設定）
+      const allowedPriceIds = (process.env.STRIPE_PRICE_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
+      if (allowedPriceIds.length > 0) {
+        const priceIds = await getLineItemPriceIds(stripe, event);
+        const matches = priceIds.some((id) => allowedPriceIds.includes(id));
+        if (!matches) {
+          res.status(200).json({ received: true, skipped: 'not-this-app-product' });
+          return;
+        }
+      }
+
       const dedupeId = obj.invoice || obj.id;
       const dedupeKey = `webhook_processed:${dedupeId}`;
       // SET ... NX EX は「まだキーが存在しない時だけ設定する」というアトミックな操作。
