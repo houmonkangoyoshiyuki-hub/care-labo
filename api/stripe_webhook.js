@@ -94,13 +94,13 @@ export default async function handler(req, res) {
 
       const dedupeId = obj.invoice || obj.id;
       const dedupeKey = `webhook_processed:${dedupeId}`;
-      const alreadyProcessed = await kvCommand(['GET', dedupeKey]);
-      if (alreadyProcessed) {
+      // SET ... NX EX は「まだキーが存在しない時だけ設定する」というアトミックな操作。
+      // これにより、ほぼ同時に2つの通知が来ても、片方しか処理が通らないようにする。
+      const setResult = await kvCommand(['SET', dedupeKey, '1', 'NX', 'EX', '2592000']);
+      if (setResult !== 'OK') {
         res.status(200).json({ received: true, skipped: 'duplicate' });
         return;
       }
-      await kvCommand(['SET', dedupeKey, '1']);
-      await kvCommand(['EXPIRE', dedupeKey, '2592000']);
 
       const customerEmail = obj.customer_details?.email || obj.customer_email || '(メール不明)';
       const code = generatePasscode();
