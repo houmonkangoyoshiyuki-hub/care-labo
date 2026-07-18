@@ -137,7 +137,7 @@ function ChatInput({ p, onSend, placeholder = "メッセージを入力…" }) {
         rows={1}
         placeholder={placeholder}
         style={{ flex:1,background:p.bg,border:`1px solid ${p.border}`,borderRadius:18,
-          padding:"6px 14px",fontSize:12,color:p.text,outline:"none",resize:"none" }}/>
+          padding:"6px 14px",fontSize:16,color:p.text,outline:"none",resize:"none" }}/>
       <button onClick={submit} style={{ width:28,height:28,borderRadius:"50%",flexShrink:0,
         background:val.trim()?p.green:p.border,border:"none",cursor:"pointer",
         display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:16 }}>→</button>
@@ -259,7 +259,7 @@ function OnboardProfile({ onComplete }) {
       </div>
       <div style={{ display:"flex", gap:8, alignItems:"flex-end" }}>
         <textarea value={input} onChange={e=>setInput(e.target.value)} placeholder="ここに入力" rows={2}
-          style={{ flex:1, borderRadius:16, padding:"10px 14px", fontSize:13, outline:"none", resize:"none",
+          style={{ flex:1, borderRadius:16, padding:"10px 14px", fontSize:16, outline:"none", resize:"none",
             background:"#fff", color:"#3A2E28", border:"1px solid #F0E0CC" }}/>
         <button onClick={()=>submit(false)} style={{ padding:"12px 18px", borderRadius:16, fontSize:13,
           fontWeight:700, background:"#D4874A", color:"#fff", border:"none", flexShrink:0 }}>送る</button>
@@ -502,11 +502,11 @@ function CalendarScreen({ p }) {
               <input value={newEvent.date} onChange={e=>setNewEvent(v=>({...v,date:e.target.value}))}
                 placeholder="日（例: 10）" inputMode="numeric"
                 style={{ width:60, background:p.bg, border:`1px solid ${p.border}`,
-                  borderRadius:8, padding:"6px 8px", fontSize:11, color:p.text, outline:"none" }}/>
+                  borderRadius:8, padding:"6px 8px", fontSize:16, color:p.text, outline:"none" }}/>
               <input value={newEvent.title} onChange={e=>setNewEvent(v=>({...v,title:e.target.value}))}
                 placeholder="予定の内容"
                 style={{ flex:1, background:p.bg, border:`1px solid ${p.border}`,
-                  borderRadius:8, padding:"6px 8px", fontSize:11, color:p.text, outline:"none" }}/>
+                  borderRadius:8, padding:"6px 8px", fontSize:16, color:p.text, outline:"none" }}/>
             </div>
             <div style={{ display:"flex", gap:5, marginBottom:6 }}>
               <span style={{ fontSize:11, color:p.muted, alignSelf:"center" }}>シフト:</span>
@@ -840,7 +840,7 @@ function MoonScreen({ p }) {
               <span style={{ fontSize:11, color:"#D080B0" }}>最終生理開始日</span>
               <input type="date" value={tempDate} onChange={e=>setTempDate(e.target.value)}
                 style={{ background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.2)",
-                  borderRadius:8, padding:"4px 10px", fontSize:11, color:"#F0D0E8",
+                  borderRadius:8, padding:"4px 10px", fontSize:16, color:"#F0D0E8",
                   outline:"none" }}/>
             </div>
             <div style={{ display:"flex", gap:8, alignItems:"center", justifyContent:"center" }}>
@@ -927,7 +927,7 @@ function SkillScreen({ p }) {
           onKeyDown={e=>e.key==="Enter"&&lookupDrug()}
           placeholder="薬剤名を入力 例: アムロジピン"
           style={{ flex:1, background:p.card2, border:`1px solid ${p.border}`, borderRadius:10,
-            padding:"8px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+            padding:"8px 12px", fontSize:16, color:p.text, outline:"none" }}/>
         <button onClick={lookupDrug}
           style={{ background:p.accent, color:p.accentFg, border:"none", borderRadius:10,
             padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer" }}>検索</button>
@@ -1024,10 +1024,10 @@ function FortuneScreen({ p, isDark }) {
         <div style={{ display:"flex", gap:8, marginBottom:8 }}>
           <input value={name} onChange={e=>setName(e.target.value)} placeholder="名前（任意）"
             style={{ flex:1, background:isDark?"#2A222E":"#fff", border:`1px solid ${p.border}`,
-              borderRadius:10, padding:"7px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+              borderRadius:10, padding:"7px 12px", fontSize:16, color:p.text, outline:"none" }}/>
           <input value={bday} onChange={e=>setBday(e.target.value)} placeholder="誕生日 例:1990/5/3"
             style={{ flex:1, background:isDark?"#2A222E":"#fff", border:`1px solid ${p.border}`,
-              borderRadius:10, padding:"7px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+              borderRadius:10, padding:"7px 12px", fontSize:16, color:p.text, outline:"none" }}/>
         </div>
         <button onClick={gen} disabled={loading}
           style={{ background:isDark?"#9B6ED4":"#9060A0", color:"#fff", border:"none",
@@ -1219,7 +1219,7 @@ JSONのみ返答。前置き不要。`,
             <input value={fridge} onChange={e=>setFridge(e.target.value)}
               placeholder="冷蔵庫の食材（例: 卵・豆腐・鶏肉）"
               style={{ width:"100%", background:p.card2, border:`1px solid ${p.border}`,
-                borderRadius:10, padding:"7px 12px", fontSize:12, color:p.text,
+                borderRadius:10, padding:"7px 12px", fontSize:16, color:p.text,
                 outline:"none", marginBottom:8 }}/>
             <button onClick={getAiSuggestion} disabled={loading}
               style={{ width:"100%", background:p.accent, color:p.accentFg, border:"none",
@@ -1344,7 +1344,7 @@ function TodoScreen({ p }) {
           onKeyDown={e=>e.key==="Enter"&&add()}
           placeholder="新しいTODOを追加…"
           style={{ flex:1, background:p.card, border:`1px solid ${p.border}`, borderRadius:12,
-            padding:"8px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+            padding:"8px 12px", fontSize:16, color:p.text, outline:"none" }}/>
         <button onClick={add}
           style={{ background:p.accent, color:p.accentFg, border:"none", borderRadius:12,
             padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer" }}>追加</button>
@@ -1453,14 +1453,14 @@ function KakeiboScreen({ p, isDark }) {
             <input value={newItem.label} onChange={e=>setNewItem(v=>({...v,label:e.target.value}))}
               placeholder="例: スーパー、コンビニ、電気代"
               style={{ width:"100%", background:p.card2, border:`1px solid ${p.border}`,
-                borderRadius:10, padding:"8px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+                borderRadius:10, padding:"8px 12px", fontSize:16, color:p.text, outline:"none" }}/>
           </div>
           <div style={{ marginBottom:14 }}>
             <div style={{ fontSize:11, color:p.muted, marginBottom:4 }}>金額（円）</div>
             <input value={newItem.amount} onChange={e=>setNewItem(v=>({...v,amount:e.target.value}))}
               placeholder="例: 1500" inputMode="numeric"
               style={{ width:"100%", background:p.card2, border:`1px solid ${p.border}`,
-                borderRadius:10, padding:"8px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+                borderRadius:10, padding:"8px 12px", fontSize:16, color:p.text, outline:"none" }}/>
           </div>
           <button onClick={addRecord}
             style={{ width:"100%", background:p.accent, color:p.accentFg, border:"none",
@@ -1615,7 +1615,7 @@ function SettingsScreen({ p, avatar, onBack }) {
           <input type="password" value={passcodeInput} onChange={e=>{setPasscodeInput(e.target.value);setPasscodeError(false);}}
             placeholder="パスコード"
             style={{ flex:1, background:p.card2, border:`1px solid ${passcodeError?"#C03040":p.border}`, borderRadius:10,
-              padding:"8px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+              padding:"8px 12px", fontSize:16, color:p.text, outline:"none" }}/>
           <button onClick={verify} style={{ background:p.accent, color:p.accentFg, border:"none", borderRadius:10,
             padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer" }}>確認</button>
         </div>
@@ -1631,7 +1631,7 @@ function SettingsScreen({ p, avatar, onBack }) {
           <div style={{ display:"flex", gap:8 }}>
             <input type="password" value={keyInput} onChange={e=>setKeyInput(e.target.value)} placeholder="sk-ant-..."
               style={{ flex:1, background:p.card2, border:`1px solid ${p.border}`, borderRadius:10,
-                padding:"8px 12px", fontSize:12, color:p.text, outline:"none" }}/>
+                padding:"8px 12px", fontSize:16, color:p.text, outline:"none" }}/>
             <button onClick={saveKey} style={{ background:p.accent, color:p.accentFg, border:"none", borderRadius:10,
               padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer" }}>{keySaved?"保存済み":"保存"}</button>
           </div>
