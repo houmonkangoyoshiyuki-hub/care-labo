@@ -73,8 +73,8 @@ export function showGlobalUpgradeModal(message) {
             ご不明な点は「公式LINEで相談する」からいつでも聞いてください。
           </div>
         </div>
-        <a href="#carelabo-basic-stripe-link-here" target="_blank" rel="noopener" id="__ai_limit_pay_basic" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#E0A05C;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">🌱 プチ課金プラン（月500円）に申し込む</a>
-        <a href="#carelabo-full-stripe-link-here" target="_blank" rel="noopener" id="__ai_limit_pay" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#D4874A;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">💳 本契約（月980円）に申し込む</a>
+        <a href="https://buy.stripe.com/cNi8wHblv8WQ9rIejBaAw08" target="_blank" rel="noopener" id="__ai_limit_pay_basic" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#E0A05C;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">🌱 プチ課金プラン（月500円）に申し込む</a>
+        <a href="https://buy.stripe.com/6oUbITexH7SMdHYa3laAw07" target="_blank" rel="noopener" id="__ai_limit_pay" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#D4874A;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">💳 本契約（月980円）に申し込む</a>
         <a href="https://line.me/R/ti/p/@tig9045i" target="_blank" rel="noopener" id="__ai_limit_line" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#06C755;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">💬 まずは公式LINEで相談する</a>
         <button id="__ai_limit_close" style="display:block;width:100%;text-align:center;padding:8px;background:none;border:none;font-size:12px;color:#8A8F84;">閉じる（また明日お試しください）</button>
       </div>
