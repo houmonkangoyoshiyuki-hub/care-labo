@@ -88,10 +88,17 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (event.type === 'checkout.session.completed' || event.type === 'invoice.payment_succeeded') {
+  // 継続課金（サブスク）は invoice.payment_succeeded だけで処理する（初回・更新どちらもこれで拾える）。
+  // 一回限りの支払いは invoice が発生しないため、checkout.session.completed（かつsubscriptionでない場合）で処理する。
+  // こうすることで、サブスクの初回支払い時に2つのイベントが両方処理されてしまう問題を防ぐ。
+  const isSubscriptionCheckout = event.type === 'checkout.session.completed' && event.data.object.mode === 'subscription';
+  const shouldProcess =
+    event.type === 'invoice.payment_succeeded' ||
+    (event.type === 'checkout.session.completed' && !isSubscriptionCheckout);
+
+  if (shouldProcess) {
     try {
       const obj = event.data.object;
-
       const dedupeId = obj.invoice || obj.id;
       const dedupeKey = `webhook_processed:${dedupeId}`;
       // SET ... NX EX は「まだキーが存在しない時だけ設定する」というアトミックな操作。
