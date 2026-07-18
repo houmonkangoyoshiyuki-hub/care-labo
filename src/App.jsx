@@ -106,14 +106,17 @@ function useChat(system, initMsg) {
       }));
       const response = await callAI({ system, messages: history, max_tokens: 600 });
       if (response.status === 429) throw new AIProxyLimitError("上限に達しました");
-      if (!response.ok) throw new Error(`APIエラー (${response.status})`);
+      if (!response.ok) {
+        const errBody = await response.text().catch(() => "");
+        throw new Error(`APIエラー (status:${response.status}) ${errBody.slice(0,300)}`);
+      }
       const data = await response.json();
-      if (data.error) throw new Error(data.error.message);
+      if (data.error) throw new Error(`data.error: ${JSON.stringify(data.error).slice(0,300)}`);
       const reply = data.content?.find(b => b.type === "text")?.text || "";
       setMsgs(v=>[...v, { from:"bot", text:reply }]);
     } catch(e) {
       if (!e?.isLimitError) {
-        setMsgs(v=>[...v, { from:"bot", text:"エラーが発生しました。もう一度お試しください。" }]);
+        setMsgs(v=>[...v, { from:"bot", text:`【診断用エラー詳細】\n${e?.name || ''}: ${e?.message || String(e)}` }]);
       }
     }
     setLoading(false);
@@ -381,7 +384,9 @@ function HomeScreen({ p, isDark, profile, avatar, onNav }) {
   useEffect(() => { endRef.current?.scrollIntoView({behavior:"smooth"}); }, [msgs, loading]);
 
   return (
-    <div style={{ flex:1, overflowY:"auto" }}>
+    <div style={{ position:"fixed", top:66, left:0, right:0, bottom:0, maxWidth:520, margin:"0 auto",
+      display:"flex", flexDirection:"column" }}>
+      <div style={{ flex:1, overflowY:"auto" }}>
       <Trend p={p} isDark={isDark}/>
       <div style={{ background:isDark?"#241A28":"#FFF3E6", padding:"9px 14px",
         display:"flex", justifyContent:"space-between", alignItems:"center",
@@ -440,6 +445,7 @@ function HomeScreen({ p, isDark, profile, avatar, onNav }) {
             </div>
           ))}
         </div>
+      </div>
       </div>
       <ChatInput p={p} onSend={send} placeholder="相棒に話しかける…"/>
     </div>
