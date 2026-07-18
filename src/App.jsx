@@ -210,7 +210,7 @@ function OnboardWelcome({ onNext }) {
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
       minHeight:"100vh", padding:"0 24px", background:"#FBF5EF", textAlign:"center" }}>
       <div style={{ fontSize:44, marginBottom:12 }}>🌿</div>
-      <div style={{ fontSize:22, fontWeight:800, marginBottom:8, color:"#3A2E28" }}>ケアラボ</div>
+      <div style={{ fontSize:22, fontWeight:800, marginBottom:8, color:"#3A2E28" }}>MIKATA</div>
       <div style={{ fontSize:13, lineHeight:1.8, color:"#7A6A5E", marginBottom:24 }}>
         心も、体も、生活も。<br/>医療・ケア職のあなたに寄り添う相棒。
       </div>
@@ -376,9 +376,9 @@ function HomeScreen({ p, isDark, profile, avatar, onNav }) {
   const [menu, setMenu] = useState(HOME_MENU);
   const [drag, setDrag] = useState(null);
   const sys = `${personaPrompt(profile, avatar)}
-あなたはケアラボのAI秘書として、医療・ケア職の生活をサポートします。シフト表が来たらカレンダー登録用に整理。短く・絵文字を適度に使って親しみやすく。`;
+あなたはMIKATAのAI秘書として、医療・ケア職の生活をサポートします。シフト表が来たらカレンダー登録用に整理。短く・絵文字を適度に使って親しみやすく。`;
   const { msgs, loading, send } = useChat(sys,
-    `こんにちは、${profile.name || ""}さん！ケアラボの相棒です 🤍\n\nシフト表・レシート・冷蔵庫の写真など\nなんでも送ってください。`);
+    `こんにちは、${profile.name || ""}さん！MIKATAの相棒です 🤍\n\nシフト表・レシート・冷蔵庫の写真など\nなんでも送ってください。`);
   const swap = (a,b) => { const m=[...menu]; [m[a],m[b]]=[m[b],m[a]]; setMenu(m); };
   const endRef = useRef(null);
   useEffect(() => { endRef.current?.scrollIntoView({behavior:"smooth"}); }, [msgs, loading]);
@@ -626,7 +626,7 @@ function CalendarScreen({ p }) {
 // ボディメイク（AIあり）
 function BodyScreen({ p, isDark, bodyPlan, setBodyPlan }) {
   const [view, setView] = useState("top");
-  const sys = `あなたはケアラボのボディメイクAIです。医療・ケア職向けの食事・運動・睡眠アドバイスをします。
+  const sys = `あなたはMIKATAのボディメイクAIです。医療・ケア職向けの食事・運動・睡眠アドバイスをします。
 シフト（日勤/夜勤/夜勤明け/公休）を聞いたら、コンビニ版と手作り版の2択で今日の食事プランを提案。
 運動は自重メイン・在宅OK。短く・具体的に・絵文字を適度に使って。`;
   const { msgs, loading, send } = useChat(sys,
@@ -894,7 +894,7 @@ function SkillScreen({ p }) {
   const [drugQ, setDrugQ] = useState("");
   const [drugRes, setDrugRes] = useState("");
   const [drugLoading, setDrugLoading] = useState(false);
-  const sys = `あなたはケアラボのSkill+ AIです。医療・ケア職向けの症例問題・急変対応・薬知識・介護技術を教えます。
+  const sys = `あなたはMIKATAのSkill+ AIです。医療・ケア職向けの症例問題・急変対応・薬知識・介護技術を教えます。
 「問題出して」と言われたら症例を1問出題。解答には詳しい解説と現場のポイントも。短く具体的に。`;
   const { msgs, loading, send } = useChat(sys,
     `Skill+ AIです 📚\n\n「問題出して」と送ってみてください！\n症例・急変・薬・介護技術から出題します。`);
@@ -999,7 +999,7 @@ function FortuneScreen({ p, isDark }) {
     setLoading(true);
     try {
       const response = await callAI({
-        system: `あなたはケアラボの占いAIです。星占い・数秘術・四柱推命の3つを統合して、今日の運勢を読みやすい1つのメッセージにまとめます。
+        system: `あなたはMIKATAの占いAIです。星占い・数秘術・四柱推命の3つを統合して、今日の運勢を読みやすい1つのメッセージにまとめます。
 全体運・仕事運・健康運・対人運を★5段階で評価。ラッキーカラー・ラッキーアイテム・ラッキーフード・今日のアドバイスを含めてください。
 医療・ケア職向けに「患者・利用者との関係」にも触れて。明るく前向きなトーンで。`,
         messages: [{role:"user",content:`名前：${name||"名無し"}、誕生日：${bday||"不明"}\n今日（2026年7月2日水曜日）の運勢を教えてください。`}],
@@ -1060,7 +1060,7 @@ function MentalScreen({ p, profile, avatar }) {
   useEffect(()=>{ endRef.current?.scrollIntoView({behavior:"smooth"}); },[msgs,loading]);
 
   const sys = `${personaPrompt(profile, avatar)}
-あなたはケアラボの匿名相談AIです。精神科ナース監修。医療・ケア職の悩みに寄り添います。
+あなたはMIKATAの匿名相談AIです。精神科ナース監修。医療・ケア職の悩みに寄り添います。
 まず相手の気持ちを受け止め、傾聴を大切に。すぐにアドバイスしない。温かく・押しつけがましくなく。
 必要なら専門機関への相談も提案。完全匿名・個人情報は記録しない。`;
 
@@ -1154,7 +1154,7 @@ function RecipeScreen({ p, isDark, bodyPlan }) {
     setLoading(true);
     try {
       const response = await callAI({
-        system: `あなたはケアラボのレシピAIです。医療・ケア職向けに時短・栄養バランスの良いレシピを提案します。
+        system: `あなたはMIKATAのレシピAIです。医療・ケア職向けに時短・栄養バランスの良いレシピを提案します。
 3つのレシピをJSON配列で返してください。各要素に：name,icon(絵文字),time,kcal,note,ing(材料配列),steps(手順配列)。
 JSONのみ返答。前置き不要。`,
         messages: [{role:"user",content:`大人${adults}人・子供${kids}人。冷蔵庫の食材：${fridge||"なんでもOK"}。夜勤明けでも作れる時短レシピを提案してください。${bodyNote}`}],
@@ -1747,7 +1747,7 @@ export default function App() {
           {cur.id==="home" ? <AvatarBadge avatar={avatar} size={38}/> : cur.icon}
         </div>
         <div style={{ flex:1 }}>
-          <div style={{ color:"#fff",fontWeight:700,fontSize:15 }}>ケアラボ</div>
+          <div style={{ color:"#fff",fontWeight:700,fontSize:15 }}>MIKATA</div>
           <div style={{ color:"rgba(255,255,255,0.65)",fontSize:11,marginTop:1 }}>{cur.label}</div>
         </div>
         <div style={{ display:"flex", gap:6, alignItems:"center" }}>
