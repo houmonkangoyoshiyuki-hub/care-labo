@@ -244,7 +244,7 @@ function OnboardProfile({ onComplete }) {
   };
   const q = QUESTIONS[step];
   return (
-    <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh", padding:"32px 20px", background:"#FBF5EF" }}>
+    <div style={{ display:"flex", flexDirection:"column", height:"100dvh", padding:"32px 20px", background:"#FBF5EF", overflow:"hidden" }}>
       <div style={{ fontSize:11, marginBottom:20, color:"#B8A090" }}>{step+1} / {QUESTIONS.length}</div>
       <div style={{ flex:1 }}>
         <div style={{ display:"flex", alignItems:"flex-start", gap:8, marginBottom:20 }}>
@@ -1674,7 +1674,7 @@ export default function App() {
   const [onboardStep, setOnboardStep] = useState(0);
   const [profile, setProfile] = useState(loadProfile);
   const [avatar, setAvatar] = useState(loadAvatar);
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState("light");
   const [tab, setTab] = useState("home");
   const [bodyPlan, setBodyPlan] = useState(null);
   const isDark = theme === "dark";
@@ -1713,9 +1713,9 @@ export default function App() {
   };
 
   return (
-    <div style={{ background:p.bg, minHeight:"100vh",
+    <div style={{ background:p.bg, height:"100dvh",
       fontFamily:"'Noto Sans JP',sans-serif",
-      display:"flex", flexDirection:"column", maxWidth:520, margin:"0 auto" }}>
+      display:"flex", flexDirection:"column", maxWidth:520, margin:"0 auto", overflow:"hidden" }}>
       <style>{`
         @keyframes dl{0%,80%,100%{opacity:.25}40%{opacity:1}}
         *{box-sizing:border-box;}
