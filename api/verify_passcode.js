@@ -30,7 +30,11 @@ export default async function handler(req, res) {
     }
     const normalized = passcode.trim().toUpperCase();
     const result = await kvCommand(['GET', `passcode:${normalized}`]);
-    res.status(200).json({ valid: result === 'valid' || result === 'basic', tier: result || null });
+    res.status(200).json({
+      valid: result === 'valid' || result === 'basic',
+      tier: result || null,
+      debug: { received: passcode, normalized, kvKey: `passcode:${normalized}`, kvResult: result },
+    });
   } catch (err) {
     res.status(500).json({ valid: false, message: err.message });
   }
