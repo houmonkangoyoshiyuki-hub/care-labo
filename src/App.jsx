@@ -1559,8 +1559,10 @@ function SettingsScreen({ p, avatar, onBack }) {
   const [keySaved, setKeySaved] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
 
+  const [debugInfo, setDebugInfo] = useState(null);
   const verify = async () => {
     setPasscodeError(false);
+    setDebugInfo(null);
     const trimmed = passcodeInput.trim();
     try {
       const res = await fetch("/api/verify_passcode", {
@@ -1568,6 +1570,7 @@ function SettingsScreen({ p, avatar, onBack }) {
         body: JSON.stringify({ passcode: trimmed }),
       });
       const data = await res.json();
+      setDebugInfo(data.debug || null);
       if (data.valid && data.tier === "basic") {
         try { localStorage.setItem("premium_tier_code", trimmed.toUpperCase()); } catch(e) {}
         setPremiumSaved(true);
@@ -1580,7 +1583,7 @@ function SettingsScreen({ p, avatar, onBack }) {
       } else {
         setPasscodeError(true);
       }
-    } catch(e) { setPasscodeError(true); }
+    } catch(e) { setPasscodeError(true); setDebugInfo({ fetchError: e?.message }); }
   };
 
   const saveKey = () => {
@@ -1621,6 +1624,11 @@ function SettingsScreen({ p, avatar, onBack }) {
         </div>
         {passcodeError && <div style={{ fontSize:10.5, color:"#C03040", marginTop:6 }}>パスコードが違います</div>}
         {premiumSaved && <div style={{ fontSize:10.5, color:p.accent, marginTop:6 }}>✓ プチ課金プラン有効（1日15回）</div>}
+        {debugInfo && (
+          <div style={{ fontSize:9.5, color:p.muted, marginTop:8, padding:8, background:p.card2, borderRadius:8, fontFamily:"monospace", wordBreak:"break-all" }}>
+            【診断用】{JSON.stringify(debugInfo)}
+          </div>
+        )}
       </div>
 
       <div style={{ background:p.card, borderRadius:14, padding:14, border:`1px solid ${p.border}`, marginBottom:12 }}>
