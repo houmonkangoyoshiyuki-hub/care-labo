@@ -73,6 +73,10 @@ export function showGlobalUpgradeModal(message) {
             ご不明な点は「公式LINEで相談する」からいつでも聞いてください。
           </div>
         </div>
+        <div style="border-radius:10px;padding:10px 12px;background:#FFF3E0;border:1.5px solid #E0A030;margin-bottom:10px;">
+          <div style="font-size:12px;font-weight:700;color:#8A5A10;">⚠️ 本契約には、Anthropic社との別途契約が必要です</div>
+          <div style="font-size:11px;line-height:1.6;color:#8A5A10;margin-top:3px;">アプリの利用料とは別に、<b>ご自身でAnthropic社（Claude開発元）にAPIキーを発行</b>していただく必要があります（初回のみ、クレジットカード登録が必要です）。詳しくは上の「APIキーって何？」をご確認ください。</div>
+        </div>
         <a href="https://buy.stripe.com/cNi8wHblv8WQ9rIejBaAw08" target="_blank" rel="noopener" id="__ai_limit_pay_basic" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#E0A05C;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">🌱 プチ課金プラン（月500円）に申し込む</a>
         <a href="https://buy.stripe.com/6oUbITexH7SMdHYa3laAw07" target="_blank" rel="noopener" id="__ai_limit_pay" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#D4874A;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">💳 本契約（月980円）に申し込む</a>
         <a href="https://line.me/R/ti/p/@tig9045i" target="_blank" rel="noopener" id="__ai_limit_line" style="display:block;text-align:center;padding:13px;border-radius:12px;background:#06C755;color:#fff;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:10px;">💬 まずは公式LINEで相談する</a>
