@@ -147,7 +147,14 @@ export default async function handler(req, res) {
       const amountTotal = obj.amount_total ?? obj.amount_paid ?? obj.total ?? 0;
       const tier = amountTotal > 0 && amountTotal < 600 ? 'basic' : 'valid';
 
+      // サブスクIDを取得（invoiceイベントなら obj.subscription、checkoutイベントも同様）
+      const subscriptionId = obj.subscription || null;
+
       await kvCommand(['SET', `passcode:${code}`, tier]);
+      if (subscriptionId) {
+        // このパスコードがどのサブスクに紐づくかを記録（解約時に使う）
+        await kvCommand(['SET', `subscription_for_passcode:${code}`, subscriptionId]);
+      }
 
       const listKey = 'passcode_list';
       let list = [];
@@ -161,7 +168,7 @@ export default async function handler(req, res) {
 
       await sendPasscodeEmail(customerEmail, code, process.env.APP_DISPLAY_NAME || 'アプリ');
 
-      console.log(`New passcode issued: ${code} (${tier}) for ${customerEmail}`);
+      console.log(`New passcode issued: ${code} (${tier}) sub:${subscriptionId} for ${customerEmail}`);
     } catch (err) {
       console.error('Error issuing passcode:', err.message);
     }
