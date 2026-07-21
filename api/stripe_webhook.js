@@ -72,6 +72,9 @@ async function sendPasscodeEmail(toEmail, code, appName) {
               <div style="font-family:monospace; font-size:22px; font-weight:bold; letter-spacing:2px;">${code}</div>
             </div>
             <p style="font-size:13px; color:#666;">
+              ※このパスコードは、ご契約が続く限りずっと同じものをお使いいただけます。毎月新しいパスコードが届くことはありません。大切に保管してください。
+            </p>
+            <p style="font-size:13px; color:#666;">
               ※初めてのご契約の方は、ご自身でAnthropic社のAPIキーを取得し、あわせて設定していただく必要があります。
               APIキーをまだ設定済みの方は、パスコードの入力だけで継続してご利用いただけます。
             </p>
@@ -84,6 +87,39 @@ async function sendPasscodeEmail(toEmail, code, appName) {
     });
   } catch (err) {
     console.error('Email send failed:', err.message);
+  }
+}
+
+async function sendRenewalEmail(toEmail, appName) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || !toEmail || toEmail === '(メール不明)') return;
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+        to: [toEmail],
+        subject: `【${appName}】今月分のお支払いが完了しました`,
+        html: `
+          <div style="font-family:sans-serif; max-width:480px; margin:0 auto; padding:20px;">
+            <h2>今月分のお支払いが完了しました</h2>
+            <p>${appName} をご利用いただき、誠にありがとうございます。</p>
+            <p style="font-size:13px; color:#666;">
+              パスコードは、初回にお送りしたものから変更ありません。お手元のパスコードをそのままお使いください。
+            </p>
+            <p style="font-size:13px; color:#666;">
+              ご不明点があれば、LINE公式アカウントまでお気軽にご連絡ください。
+            </p>
+          </div>
+        `,
+      }),
+    });
+  } catch (err) {
+    console.error('Renewal email send failed:', err.message);
   }
 }
 
@@ -140,6 +176,26 @@ export default async function handler(req, res) {
       }
 
       const customerEmail = obj.customer_details?.email || obj.customer_email || '(メール不明)';
+      const subscriptionId = obj.subscription || null;
+
+      // ── このサブスクリプションに、既にパスコードが発行済みでないか確認 ──
+      // 発行済みなら、更新支払いとみなし新規パスコードは発行しない（1サブスクにつき1パスコードを維持する）
+      let existingCode = null;
+      if (subscriptionId) {
+        try {
+          existingCode = await kvCommand(['GET', `passcode_for_subscription:${subscriptionId}`]);
+        } catch (e) {}
+      }
+
+      if (existingCode) {
+        // 更新支払い：パスコードは変更せず、お知らせメールだけ送る
+        await sendRenewalEmail(customerEmail, process.env.APP_DISPLAY_NAME || 'アプリ');
+        console.log(`Renewal payment confirmed for existing passcode: ${existingCode} sub:${subscriptionId}`);
+        res.status(200).json({ received: true, renewal: true, code: existingCode });
+        return;
+      }
+
+      // 初回支払い：新規パスコードを発行
       const code = generatePasscode();
       const now = new Date();
       const stamp = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -147,13 +203,11 @@ export default async function handler(req, res) {
       const amountTotal = obj.amount_total ?? obj.amount_paid ?? obj.total ?? 0;
       const tier = amountTotal > 0 && amountTotal < 600 ? 'basic' : 'valid';
 
-      // サブスクIDを取得（invoiceイベントなら obj.subscription、checkoutイベントも同様）
-      const subscriptionId = obj.subscription || null;
-
       await kvCommand(['SET', `passcode:${code}`, tier]);
       if (subscriptionId) {
-        // このパスコードがどのサブスクに紐づくかを記録（解約時に使う）
+        // このパスコードがどのサブスクに紐づくかを記録（解約時に使う／今後の更新時の重複発行防止に使う）
         await kvCommand(['SET', `subscription_for_passcode:${code}`, subscriptionId]);
+        await kvCommand(['SET', `passcode_for_subscription:${subscriptionId}`, code]);
       }
 
       const listKey = 'passcode_list';
