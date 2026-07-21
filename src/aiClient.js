@@ -54,10 +54,6 @@ export function showGlobalUpgradeModal(message) {
           <div style="font-size:13px;font-weight:700;color:#D4874A;margin-bottom:4px;">プチ課金プラン（月500円）</div>
           <div style="font-size:12px;line-height:1.6;color:#7A5A3E;">1日の利用回数を増やせます（APIキーの設定は不要です）。</div>
         </div>
-        <div style="border-radius:12px;padding:14px;background:#FBF0E3;margin-bottom:12px;">
-          <div style="font-size:13px;font-weight:700;color:#C97B35;margin-bottom:4px;">💡ちょっとしたヒント</div>
-          <div style="font-size:12px;line-height:1.6;color:#8A5B25;">ご家族・お友達にClaude（Anthropic社のAI）を契約されている方がいれば、そのAPIキーをお借りして設定することでもご利用いただけます。</div>
-        </div>
         <div style="border-radius:12px;padding:14px;background:#E8F0F5;margin-bottom:16px;">
           <div style="font-size:13px;font-weight:700;color:#3A6B96;margin-bottom:4px;">本契約について（月980円）</div>
           <div style="font-size:12px;line-height:1.6;color:#3A6B96;">本契約となると、お客様ご自身でAIサービス（Anthropic社）とご契約いただき、そのAPIキーを設定していただく形になります。設定後は、ほぼ無制限でご利用いただけます（利用料はお客様とAnthropic社の直接契約分のみ）。</div>
