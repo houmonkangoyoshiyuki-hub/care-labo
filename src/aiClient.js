@@ -60,6 +60,7 @@ export function showGlobalUpgradeModal(message) {
           <button id="__ai_apikey_toggle" style="margin-top:8px;font-size:11px;font-weight:700;color:#3A6B96;background:none;border:none;text-decoration:underline;padding:0;">「APIキー」って何？申し込み後の流れは？</button>
           <div id="__ai_apikey_detail" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #C9D9E5;font-size:11.5px;line-height:1.7;color:#3A6B96;">
             <b>APIキーとは：</b>AIを動かすための「合言葉」のようなものです。ご自身でAnthropic社に登録すると発行されます（5分程度、クレジットカード登録が必要です）。<br><br>
+            <b>ご注意：</b>APIキーは、ご家族・お友達間であっても共有・使い回しをすることは推奨されていません（Anthropic社の利用規約に抵触するおそれがあります）。無料お試し期間は、まずはご自身でじっくりお試しいただくために設けています。<br><br>
             <b>お申し込み後の流れ：</b><br>
             ①下の「お申し込み」から決済<br>
             ②数分〜数十分でメールにパスコードが届く<br>
