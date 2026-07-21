@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { callAI, AIProxyLimitError } from "./aiClient.js";
+import { callAI, AIProxyLimitError, getClientId } from "./aiClient.js";
 
 // ━━━ CARE LABO × MIKATA — 統合版 ━━━━━━━━━━━━━━━━━━
 
@@ -1558,6 +1558,37 @@ function SettingsScreen({ p, avatar, onBack }) {
   const [keyInput, setKeyInput] = useState(() => { try { return localStorage.getItem("custom_api_key")||""; } catch(e) { return ""; } });
   const [keySaved, setKeySaved] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState("");
+
+  const cancelSubscription = async () => {
+    setCancelling(true); setCancelError("");
+    try {
+      const activePasscode = passcodeInput.trim() || (() => { try { return localStorage.getItem("active_passcode") || ""; } catch(e) { return ""; } })();
+      const res = await fetch("/api/cancel_subscription", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ passcode: activePasscode }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        try {
+          localStorage.removeItem("api_key_unlocked");
+          localStorage.removeItem("api_key_unlocked_until");
+          localStorage.removeItem("active_passcode");
+          localStorage.removeItem("premium_tier_code");
+          localStorage.removeItem("custom_api_key");
+        } catch(e) {}
+        setApiUnlocked(false);
+        setPremiumSaved(false);
+        setConfirmCancel(false);
+        alert("解約が完了しました。ご利用ありがとうございました。");
+      } else {
+        setCancelError(data.message || "エラーが発生しました。公式LINEにご連絡ください。");
+      }
+    } catch(e) { setCancelError("通信エラーが発生しました。公式LINEにご連絡ください。"); }
+    setCancelling(false);
+  };
 
   const [debugInfo, setDebugInfo] = useState(null);
   const verify = async () => {
@@ -1567,17 +1598,20 @@ function SettingsScreen({ p, avatar, onBack }) {
     try {
       const res = await fetch("/api/verify_passcode", {
         method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ passcode: trimmed }),
+        body: JSON.stringify({ passcode: trimmed, clientId: getClientId() }),
       });
       const data = await res.json();
       setDebugInfo(data.debug || null);
-      if (data.valid && data.tier === "basic") {
+      if (data.deviceLimitReached) {
+        setPasscodeError(data.message || "このパスコードは既に上限台数の端末で使用されています。");
+      } else if (data.valid && data.tier === "basic") {
         try { localStorage.setItem("premium_tier_code", trimmed.toUpperCase()); } catch(e) {}
         setPremiumSaved(true);
       } else if (data.valid) {
         try {
           localStorage.setItem("api_key_unlocked", "yes");
           localStorage.setItem("api_key_unlocked_until", String(Date.now() + 35*24*60*60*1000));
+          localStorage.setItem("active_passcode", trimmed.toUpperCase());
         } catch(e) {}
         setApiUnlocked(true);
       } else {
@@ -1622,7 +1656,7 @@ function SettingsScreen({ p, avatar, onBack }) {
           <button onClick={verify} style={{ background:p.accent, color:p.accentFg, border:"none", borderRadius:10,
             padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer" }}>確認</button>
         </div>
-        {passcodeError && <div style={{ fontSize:10.5, color:"#C03040", marginTop:6 }}>パスコードが違います</div>}
+        {passcodeError && <div style={{ fontSize:10.5, color:"#C03040", marginTop:6 }}>{typeof passcodeError === "string" ? passcodeError : "パスコードが違います"}</div>}
         {premiumSaved && <div style={{ fontSize:10.5, color:p.accent, marginTop:6 }}>✓ プチ課金プラン有効（1日15回）</div>}
         {debugInfo && (
           <div style={{ fontSize:9.5, color:p.muted, marginTop:8, padding:8, background:p.card2, borderRadius:8, fontFamily:"monospace", wordBreak:"break-all" }}>
@@ -1642,6 +1676,29 @@ function SettingsScreen({ p, avatar, onBack }) {
                 padding:"8px 12px", fontSize:16, color:p.text, outline:"none" }}/>
             <button onClick={saveKey} style={{ background:p.accent, color:p.accentFg, border:"none", borderRadius:10,
               padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer" }}>{keySaved?"保存済み":"保存"}</button>
+          </div>
+        )}
+      </div>
+
+      <div style={{ background:p.card, borderRadius:14, padding:14, border:`1px solid ${p.border}`, marginBottom:12 }}>
+        <div style={{ fontSize:12, fontWeight:700, color:"#C03040", marginBottom:8 }}>契約の解約</div>
+        <div style={{ fontSize:10.5, color:p.muted, marginBottom:10, lineHeight:1.6 }}>
+          解約すると、次回の引き落としが止まり、即座に本契約プランをご利用いただけなくなります（無料お試し版に戻ります）。
+        </div>
+        {!confirmCancel ? (
+          <button onClick={()=>setConfirmCancel(true)} disabled={!apiUnlocked && !premiumSaved}
+            style={{ width:"100%", padding:"10px 0", borderRadius:10, fontSize:12, fontWeight:700,
+              background:"#FBEAEA", color:"#A0453F", border:"none", opacity:(apiUnlocked||premiumSaved)?1:0.4 }}>🚪 契約を解約する</button>
+        ) : (
+          <div style={{ background:"#FBEAEA", borderRadius:10, padding:12 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:"#A0453F", marginBottom:8 }}>本当に解約しますか？この操作は取り消せません。</div>
+            {cancelError && <div style={{ fontSize:10.5, color:"#A0453F", marginBottom:8 }}>{cancelError}</div>}
+            <div style={{ display:"flex", gap:8 }}>
+              <button onClick={()=>setConfirmCancel(false)} style={{ flex:1, padding:"8px 0", borderRadius:8, fontSize:11, fontWeight:700,
+                background:p.card2, color:p.muted, border:"none" }}>キャンセル</button>
+              <button onClick={cancelSubscription} disabled={cancelling} style={{ flex:1, padding:"8px 0", borderRadius:8, fontSize:11, fontWeight:700,
+                background:"#A0453F", color:"#fff", border:"none", opacity:cancelling?0.6:1 }}>{cancelling?"処理中…":"解約する"}</button>
+            </div>
           </div>
         )}
       </div>
